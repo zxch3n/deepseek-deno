@@ -13,7 +13,6 @@ function addCorsHeaders(headers: Headers) {
 }
 
 async function handler(req: Request): Promise<Response> {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, {
       headers: addCorsHeaders(
@@ -32,12 +31,8 @@ async function handler(req: Request): Promise<Response> {
     let bodyText = textBody;
     try {
       const body = JSON.parse(textBody);
-      console.log("Request body:", JSON.stringify(body, null, 2));
-      // Replace the model with deepseek-chat
       if (body.model) {
-        const originalModel = body.model;
         body.model = "deepseek-chat";
-        console.log(`Model changed from "${originalModel}" to "deepseek-chat"`);
       }
       bodyText = JSON.stringify(body);
     } catch (_) {
@@ -45,7 +40,6 @@ async function handler(req: Request): Promise<Response> {
     }
 
     // Forward the request to OpenAI
-    console.log(`Forwarding request to ${OPENAI_API_URL}${path}`);
     const response = await fetch(`${OPENAI_API_URL}${path}`, {
       headers: req.headers,
       method: req.method,
